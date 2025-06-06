@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMU .Hack FastAPI CORS Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        button {
+            padding: 10px;
+            margin: 5px;
+            cursor: pointer;
+        }
+        pre {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        input, select {
+            padding: 5px;
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>SMU .Hack FastAPI CORS Test</h1>
+    <!-- Create Member Section -->
+    <h2>1. Create Member (Protected, Requires Token)</h2>
+    <input type="text" id="name" placeholder="Name" value="Jane Smith">
+    <input type="text" id="school" placeholder="School" value="SMU">
+    <input type="number" id="graduation_year" placeholder="Graduation Year" value="2026">
+    <button onclick="createMember()">Create Member</button>
+    <pre id="createMemberResponse">Response will appear here...</pre>
+
+    <!-- Get Members Section -->
+    <h2>2. Get All Members (Unprotected)</h2>
+    <select id="sortBy">
+        <option value="">No Sort</option>
+        <option value="asc">Sort Ascending</option>
+        <option value="desc">Sort Descending</option>
+    </select>
+    <button onclick="getMembers()">Get Members</button>
+    <pre id="membersResponse">Response will appear here...</pre>
+
+    <!-- Get Member by ID Section -->
+    <h2>3. Get Member by ID (Unprotected)</h2>
+    <input type="number" id="memberId" placeholder="Member ID" value="1">
+    <button onclick="getMemberById()">Get Member</button>
+    <pre id="memberResponse">Response will appear here...</pre>
+
+    <script>
+        const API_URL = 'http://127.0.0.1:8000';
+        let accessToken = '';
+
+        // Login to get token
+        async function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const responseElement = document.getElementById('tokenResponse');
+
+            try {
+                const response = await fetch(`${API_URL}/token`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
+                });
+
+                const data = await response.json();
+                responseElement.textContent = JSON.stringify(data, null, 2);
+
+                if (response.ok) {
+                    accessToken = data.access_token;
+                    responseElement.style.color = 'green';
+                } else {
+                    responseElement.style.color = 'red';
+                }
+            } catch (error) {
+                responseElement.textContent = `Error: ${error.message}`;
+                responseElement.style.color = 'red';
+            }
+        }
+
+        // Create a new member
+        async function createMember() {
+            const name = document.getElementById('name').value;
+            const school = document.getElementById('school').value;
+            const graduationYear = document.getElementById('graduation_year').value;
+            const responseElement = document.getElementById('createMemberResponse');
+
+            try {
+                const response = await fetch(`${API_URL}/members/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${accessToken}`
+                    },
+                    body: JSON.stringify({
+                        name,
+                        school,
+                        graduation_year: parseInt(graduationYear)
+                    })
+                });
+
+                const data = await response.json();
+                responseElement.textContent = JSON.stringify(data, null, 2);
+                responseElement.style.color = response.ok ? 'green' : 'red';
+            } catch (error) {
+                responseElement.textContent = `Error: ${error.message}`;
+                responseElement.style.color = 'red';
+            }
+        }
+
+        // Get all members
+        async function getMembers() {
+            const sortBy = document.getElementById('sortBy').value;
+            const responseElement = document.getElementById('membersResponse');
+            const url = sortBy ? `${API_URL}/members/?sort_by=${sortBy}` : `${API_URL}/members/`;
+
+            try {
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                responseElement.textContent = JSON.stringify(data, null, 2);
+                responseElement.style.color = response.ok ? 'green' : 'red';
+            } catch (error) {
+                responseElement.textContent = `Error: ${error.message}`;
+                responseElement.style.color = 'red';
+            }
+        }
+
+        // Get member by ID
+        async function getMemberById() {
+            const memberId = document.getElementById('memberId').value;
+            const responseElement = document.getElementById('memberResponse');
+
+            try {
+                const response = await fetch(`${API_URL}/member/${memberId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                responseElement.textContent = JSON.stringify(data, null, 2);
+                responseElement.style.color = response.ok ? 'green' : 'red';
+            } catch (error) {
+                responseElement.textContent = `Error: ${error.message}`;
+                responseElement.style.color = 'red';
+            }
+        }
+    </script>
+</body>
+</html>
