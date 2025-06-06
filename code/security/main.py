@@ -1,19 +1,20 @@
 """
 Introduction to API Development
-SMU .hack 2024
+SMU .hack 2025
 
 OAuth2.0 Reference: https://fastapi.tiangolo.com/tutorial/security/
 """
 
 # Imports
 from fastapi import FastAPI, Depends, status, HTTPException
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordBearer
 from pydantic import BaseModel
 from typing import List, Optional
 from database import SessionLocal
 from schema import DBMember
 from sqlalchemy import desc, asc
 from sqlalchemy.orm import Session
+from fastapi import Body
 
 
 # Create a FastAPI Instance
@@ -68,10 +69,10 @@ def create_member(db: Session, member: Member):
 # OAuth2.0
 # ------------------------------------------------
 fake_users_db = {
-    "jaygupta": {
-        "username": "jaygupta",
-        "full_name": "Jay Gupta",
-        "email": "jaygupta@example.com",
+    "syahmiabbas": {
+        "username": "syahmiabbas",
+        "full_name": "Syahmi Abbas",
+        "email": "syahmiabbas@example.com",
         "hashed_password": "fakehashedsecret",
         "disabled": False,
     },
@@ -127,10 +128,13 @@ async def get_current_active_user(current_user: User = Depends(get_current_user)
     return current_user
 
 
+class LoginRequest(BaseModel):
+    username: str
+    password: str
+
 @app.post("/token")
-async def login(form_data: OAuth2PasswordRequestForm = Depends()):
-    # Get user dictionary from username
-    user_dict = fake_users_db.get(form_data.username)
+async def login(login_request: LoginRequest = Body(...)):
+    user_dict = fake_users_db.get(login_request.username)
     
     # Check if user exists
     if not user_dict:
@@ -140,7 +144,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     user = UserInDB(**user_dict)
     
     # Hash the password
-    hashed_password = fake_hash_password(form_data.password)
+    hashed_password = fake_hash_password(login_request.password)
     
     # Check if the password matches
     if not hashed_password == user.hashed_password:
