@@ -27,13 +27,20 @@ $ pip install -r requirements.txt
 4. Go to `Project Settings` -> `Generate Domain`
 5. Go to the `deployment url` to preview the API. 
 
-### GitHub Actions Setup
-1. Fork [this](https://github.com/guptajay/SMU.hack-API-Development) repository.
-2. Push the changes to GitHub to trigger the deployment workflow. 
-
 ### Run Live Server
 > Run the Uvicorn live server to serve the API
 
 ```console
 $ uvicorn main:app --reload
 ```
+
+### To run tests in the deploy folder
+```
+pytest ./deploy/tests/test_main.py
+```
+
+### To run the index.html on port 5000 in the deploy folder
+```
+python -m http.server 5000
+```
+
