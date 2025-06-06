@@ -5,7 +5,7 @@
 ## Workshop Details
 > This workshop will give you a brief introduction to web-based API development.
 
-**Time**: Friday, 28 June 2024. 7:00pm - 10:00pm  
+**Time**: Friday, 6 June 2025. 7:00pm - 10:00pm  
 **Venue**: Singapore Management University @ 81 Victoria St, Singapore 188065
 
 You will learn the fundamentals of deploying a REST API on a server running in the
@@ -19,7 +19,7 @@ In a hands-on exercise, you will be introduced to [GitHub Actions](https://githu
 
 ## Prerequisites
 Before you start the workshop, make sure you have these:
-* Python 3.6+ installed in your system
+* Python 3.12+ installed in your system
 * A code editor such as Visual Studio Code
 * Postman API Platform Desktop App
 * Railway Free Account
