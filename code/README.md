@@ -2,7 +2,7 @@
 
 ### Virtual Environment Setup
 
-#### MacOS & Linux
+#### MacOS, Linux and GitHub CodeSpaces
 
 ```console
 $ python3 -m venv env 
@@ -43,4 +43,11 @@ pytest ./deploy/tests/test_main.py
 ```
 python -m http.server 5000
 ```
+### Special Instructions for GitHub CodeSpaces
+
+If you are running on GitHub CodeSpaces, you will need to change the API_URL variable in the index.html to the URL assigned to your CodeSpace. 
+
+For example, instead of `const API_URL = 'http://127.0.0.1:8000';`, change to `const API_URL = 'https://opulent-space-acorn-4q4pjwgv9wv27wx-8000.app.github.dev';`
+
+Refer to this [guide](https://docs.github.com/en/codespaces/developing-in-a-codespace/forwarding-ports-in-your-codespace) for more details
 
